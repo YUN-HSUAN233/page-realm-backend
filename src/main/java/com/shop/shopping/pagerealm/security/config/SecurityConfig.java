@@ -23,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.time.LocalDate;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)//方法級別權限控制
@@ -65,8 +67,8 @@ public class SecurityConfig {
                         // 優惠券：分級控制
                         //CMS前端測試用
                         .requestMatchers(
-                                "/","/index.html", "/login.html","/CMS/**",
-                                "/static/**",
+                                "/", "/index.html", "/login.html",
+                                "/CMS/**",
                                 "/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico"
                         ).permitAll()
                         //CMS前端測試用
@@ -74,10 +76,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> {
                     oauth2.successHandler(oAuth2LoginSuccessHandler);
                 })
-                /*
                 .csrf(csrf -> csrf.disable())
-
-                 */
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(unauthorizedHandler))
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
