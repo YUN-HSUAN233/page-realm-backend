@@ -128,10 +128,11 @@ public class CartServiceImpl implements CartService {
         response.setCartId(cart.getId());
         response.setUserId(cart.getUserId());
         List<CartItemResponse> itemResponses = new ArrayList<>();
-        for (CartItem item : cart.getItems()) {
+        for (int i = 0; i < cart.getItems().size(); i++) {
+            CartItem item = cart.getItems().get(i);
             Books book = item.getBook();
             CartItemResponse itemResp = new CartItemResponse();
-            itemResp.setBookId(book.getId());
+            itemResp.setId(item.getId());
             itemResp.setTitle(book.getTitle());
             itemResp.setAuthor(book.getAuthor());
             itemResp.setSnapshotPrice(item.getSnapshotPrice());

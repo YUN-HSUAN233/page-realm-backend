@@ -19,15 +19,17 @@ public class WishlistServiceImpl implements WishlistService {
     private final CartRepository cartRepository;
     private final AnonWishlistRedisRepository anonWishlistRedisRepository;
     private final BooksRepository booksRepository;
+    private final WishlistItemRepository wishlistItemRepository;
 
     public WishlistServiceImpl(WishlistRepository wishlistRepository,
-                                CartRepository cartRepository,
-                           AnonWishlistRedisRepository anonWishlistRedisRepository,
-                           BooksRepository booksRepository) {
+                               CartRepository cartRepository,
+                               AnonWishlistRedisRepository anonWishlistRedisRepository,
+                               BooksRepository booksRepository, WishlistItemRepository wishlistItemRepository) {
         this.wishlistRepository = wishlistRepository;
         this.cartRepository = cartRepository;
         this.anonWishlistRedisRepository = anonWishlistRedisRepository;
         this.booksRepository = booksRepository;
+        this.wishlistItemRepository = wishlistItemRepository;
     }
 
     @Override
@@ -103,16 +105,18 @@ public class WishlistServiceImpl implements WishlistService {
         response.setWishId(wishlist.getId());
         response.setUserId(wishlist.getUserId());
         List<WishItemResponse> itemResponses = new ArrayList<>();
-        for (WishlistItems item : wishlist.getItems()) {
+        for (int i = 0; i < wishlist.getItems().size(); i++) {
+            WishlistItems item = wishlist.getItems().get(i);
             Books book = item.getBook();
             WishItemResponse itemResp = new  WishItemResponse();
-            itemResp.setBookId(book.getId());
+            itemResp.setId(item.getId());
             itemResp.setTitle(book.getTitle());
             itemResp.setAuthor(book.getAuthor());
             itemResp.setPrice(book.getPrice());
             itemResp.setFormat(book.getFormat());
             itemResp.setCoverImageUrl(book.getCoverImageUrl());
             itemResponses.add(itemResp);
+
         }
         response.setItems(itemResponses);
         return response;
