@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CouponRedemptionRepository extends JpaRepository<CouponRedemption, Long> {
@@ -13,6 +14,9 @@ public interface CouponRedemptionRepository extends JpaRepository<CouponRedempti
     long countByCouponIdAndUserIdAndStatus(Long couponId, Long userId, RedemptionStatus status);
 
     Optional<CouponRedemption> findByUserIdAndStatus(Long userId, RedemptionStatus status);
+    List<CouponRedemption> findAllByUserIdOrderByRedeemedAtDesc(Long userId);
+
+    List<CouponRedemption> findAllByUserIdAndCouponId(Long userId, Long couponId);
 
     boolean existsByOrderIdAndCouponId(Long orderId, Long couponId);
     Page<CouponRedemption> findAllByUserIdOrderByRedeemedAtDesc(Long userId, Pageable pageable);

@@ -59,6 +59,11 @@ public class CouponRedemption {
         if (redeemedAt == null) redeemedAt = LocalDateTime.now();
     }
 
-    public enum RedemptionStatus { APPLIED,USED, REVERSED }
+    @PreUpdate
+    public void onUpdate() {
+        redeemedAt = LocalDateTime.now();
+    }
+
+    public enum RedemptionStatus { HOLD,APPLIED,USED, REVERSED }
 }
 
