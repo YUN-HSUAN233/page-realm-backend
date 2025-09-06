@@ -3,22 +3,25 @@ package com.shop.shopping.order.controller;
 
 import com.shop.shopping.order.dto.response.UserOrderResponse;
 import com.shop.shopping.pagerealm.security.service.UserDetailsImpl;
-import com.shop.shopping.order.service.UserOrderService;
+import com.shop.shopping.shoppingcart.repository.OrdersRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/order")
 public class UserOrderController {
-    private final UserOrderService userOrderService;
 
-    public  UserOrderController(UserOrderService userOrderService) {
-        this.userOrderService = userOrderService;
+    private final OrdersRepository ordersRepository;
+
+    public  UserOrderController(OrdersRepository ordersRepository) {
+        this.ordersRepository = ordersRepository;
+
     }
 
     /**
@@ -27,8 +30,12 @@ public class UserOrderController {
      * @return
      */
     @GetMapping("/view")
-    public ResponseEntity<List<UserOrderResponse>> getUserOrders(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<UserOrderResponse> responses = userOrderService.getOrder(userDetails.getId());
+    public ResponseEntity<Page<UserOrderResponse>> getUserOrders(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                 @RequestParam int page,
+                                                                 @RequestParam(defaultValue = "5") int size
+    )
+    {
+        Page<UserOrderResponse> responses = ordersRepository.findAllByUserIdOrderByCreatedAtDesc(userDetails.getId(), PageRequest.of(page, size));
         return ResponseEntity.ok(responses);
     }
 

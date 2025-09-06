@@ -26,11 +26,10 @@ public class CouponRedemption {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "coupon_id", nullable = false)
-    private Long couponId;
 
-    @Column(name = "code_id")
-    private Long codeId; // 保留欄位
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_id")
+    private Coupon coupon; // 保留欄位
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
