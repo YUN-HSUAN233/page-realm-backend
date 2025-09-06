@@ -11,4 +11,5 @@ public class UserPointsResponse {
     String reason;
     Integer earnedPoints;
     Integer usedPoints;
+    LocalDate expiredAt;
 }

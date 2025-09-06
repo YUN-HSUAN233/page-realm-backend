@@ -28,12 +28,15 @@ public class UserPointsServiceImpl implements UserPointsService {
             userPointsResponse.setEarnedPoints(pointLot.getEarnedPoints());
             userPointsResponse.setUsedPoints(pointLot.getUsedPoints());
 
+
             if(pointLot.getEarnedPoints() == 0){
                 userPointsResponse.setReason("點數折抵");
+                userPointsResponse.setExpiredAt(null);
                 response.add(userPointsResponse);
 
             }else {
                 userPointsResponse.setReason("消費獲得");
+                userPointsResponse.setExpiredAt(pointLot.getExpiresAt().toLocalDate());
                 response.add(userPointsResponse);
             }
         }

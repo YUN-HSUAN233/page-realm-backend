@@ -1,5 +1,6 @@
 package com.shop.shopping.shoppingcart.controller;
 
+import com.shop.shopping.coupons_points.repository.CouponRedemptionRepository;
 import com.shop.shopping.pagerealm.security.service.UserDetailsImpl;
 import com.shop.shopping.shoppingcart.dto.request.ApplyCouponRequest;
 import com.shop.shopping.shoppingcart.dto.request.ApplyPointsRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,8 +26,10 @@ import java.util.UUID;
 public class CheckoutController {
     private final CheckoutService checkoutService;
     private final EcpayClient ecpayClient;
+    private final CouponRedemptionRepository couponRedemptionRepository;
 
-    public CheckoutController(EcpayClient ecpayClient, CheckoutService checkoutService) {
+    public CheckoutController(EcpayClient ecpayClient, CheckoutService checkoutService, CouponRedemptionRepository couponRedemptionRepository) {
+        this.couponRedemptionRepository = couponRedemptionRepository;
         this.ecpayClient = ecpayClient;
         this.checkoutService = checkoutService;
     }
@@ -81,6 +85,23 @@ public class CheckoutController {
         PointsDeductionResponse response = checkoutService.applyPoints(userDetails.getId(), request);
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 顯示可用優惠劵
+     */
+    @GetMapping("/couponInfo")
+    public ResponseEntity<List<CouponInfoResponse>> getAvailableCoupons(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long userId = userDetails.getId();
+
+        List<CouponInfoResponse> coupons = couponRedemptionRepository.findValidCouponByUserId(userId);
+
+        if (coupons.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204
+        } else {
+            return ResponseEntity.ok(coupons); // 200 + list json
+        }
+    }
+
 
     /**
      * 使用優惠劵
